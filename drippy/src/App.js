@@ -5,21 +5,33 @@ import HomePage from "./pages/homepage/HomePage";
 import Shop from "./pages/Shop/Shop";
 import Header from "./components/Header/Header";
 import SignInUp from "./components/SignIn-Up/SignIn-Up";
-import { auth } from "./firebase/firebase.utils";
+import { auth, createUserProfileDocument } from "./firebase/firebase.utils";
 
 function App() {
   const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
-    auth.onAuthStateChanged((user) => {
-      console.log(user);
-      setCurrentUser(user);
+    const unsubscribe = auth.onAuthStateChanged(async (userAuth) => {
+      if (userAuth) {
+        const useRef = await createUserProfileDocument(userAuth);
+
+        useRef.onSnapshot((snapshot) => {
+          setCurrentUser({
+            id: snapshot.id,
+            ...snapshot.data(),
+          });
+        });
+        console.log(currentUser);
+      }
+      setCurrentUser(userAuth);
     });
-  }, []);
+
+    return () => unsubscribe();
+  }, [currentUser]);
 
   return (
     <div className="App">
-      <Header />
+      <Header currentUser={currentUser} />
       <Switch>
         <Route exact path="/" component={HomePage} />
         <Route exact path="/shop" component={Shop} />

@@ -17,17 +17,19 @@ function App() {
 
         useRef.onSnapshot((snapshot) => {
           setCurrentUser({
-            id: snapshot.id,
-            ...snapshot.data(),
+            currentUser: {
+              id: snapshot.id,
+              ...snapshot.data(),
+            },
           });
         });
-        console.log(currentUser);
+      } else {
+        setCurrentUser(userAuth);
       }
-      setCurrentUser(userAuth);
     });
 
     return () => unsubscribe();
-  }, [currentUser]);
+  }, []);
 
   return (
     <div className="App">

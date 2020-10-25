@@ -11,8 +11,7 @@ import SignInUp from "./components/SignIn-Up/SignIn-Up";
 import { auth, createUserProfileDocument } from "./firebase/firebase.utils";
 import { setCurrentUser } from "./redux/user/user-action";
 
-function App() {
-  const [currentUser, setCurrentUser] = useState(null);
+function App({setCurrentUser}) {
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (userAuth) => {

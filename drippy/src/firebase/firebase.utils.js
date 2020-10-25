@@ -13,12 +13,13 @@ const firebaseConfig = {
 };
 
 export const createUserProfileDocument = async (userAuth, additionalData) => {
+  // First check if User isnt logged In
   if (!userAuth) return;
 
   const userRef = firestore.doc(`user/${userAuth.uid}`);
-
   const snapShot = await userRef.get();
 
+  // Add User to Database if User is New
   if (!snapShot.exists) {
     const { displayName, email } = userAuth;
     const createdAt = new Date();
